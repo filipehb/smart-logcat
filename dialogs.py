@@ -1,8 +1,16 @@
-from kivy.uix.popup import Popup
-from kivy.properties import StringProperty, ObjectProperty, NumericProperty
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
 
-def alertPopup(title, msg):
-    popup = Popup(title=title,
-                      content=Label(text=msg),
-                      size_hint=(None, None), size=(dp(600), dp(200)))
-    popup.open()
+def showInformationDialog(title, message):
+    msgBox = QMessageBox()
+    msgBox.setIcon(QMessageBox.Information)
+    msgBox.setText(message)
+    msgBox.setWindowTitle(title)
+    msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+    msgBox.buttonClicked.connect(_msgButtonClick)
+
+    returnValue = msgBox.exec()
+    if returnValue == QMessageBox.Ok:
+        print('OK clicked')
+
+def _msgButtonClick(i):
+   print("Button clicked is:", i.text())

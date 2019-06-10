@@ -1,18 +1,43 @@
-from kivy.app import App
-from kivy.uix.widget import Widget
-from dialogs import alertPopup
-from kivy.logger import Logger
-from kivy.config import Config
-from kivy.core.window import Window
-from kivy.uix.dropdown import DropDown
-from kivy.uix.label import Label
-Config.window_icon = "icon.png"
-dropdown = DropDown()
-#Window.minimum_height = 600
-#Window.minimum_width = 800
-#Window.maximize()
+from PyQt5.QtWidgets import QApplication
+from PyQt5.uic import loadUi
+from dialogs import showInformationDialog
+from adb_utils import AdbUtils
 
-class SmartLogcat(Widget):
+class SmartLogcat():
+    def __init__(self, window):
+        """Construtor."""
+        #Adb Utils
+        adbutils = AdbUtils()
+        # Widgets
+        self.comboBoxSerial = window.comboBoxSerial
+        self.lineEditSearch = window.lineEditSearch
+        self.plainTextEditLog = window.plainTextEditLog
+        self.pushButtonSaveLog = window.pushButtonSaveLog
+        self.pushButtonTakeScreenshot = window.pushButtonTakeScreenshot
+        # Conectando um método ao evento de clique do botão.
+        self.pushButtonSaveLog.clicked.connect(self.pushButtonSaveLog_on_button_clicked)
+        self.pushButtonTakeScreenshot.clicked.connect(self.pushButtonTakeScreenshot_on_button_clicked)
+
+    def pushButtonSaveLog_on_button_clicked(self):
+        """Método é executado quando o botão é pressionado."""
+        # Coletando o valor do campo de entrada de texto.
+        text = self.plainTextEditLog.text()
+        # Verificando se algo foi digitado.
+        #if text:
+            #self.label.setText(text)
+        #else:
+            #self.label.setText('Digite algo no campo de texto :)')
+
+    def pushButtonTakeScreenshot_on_button_clicked(self):
+        """Método é executado quando o botão é pressionado."""
+        # Coletando o valor do campo de entrada de texto.
+        text = self.plainTextEditLog.text()
+        # Verificando se algo foi digitado.
+        #if text:
+            #self.label.setText(text)
+        #else:
+            #self.label.setText('Digite algo no campo de texto :)')
+
     def search(self, text):
         print('texto digitado: {}'.format(text))
     
@@ -28,15 +53,11 @@ class SmartLogcat(Widget):
         labelSerial.bind(on_release=dropdown.open)
         dropdown.bind(on_select=lambda instance, x: setattr(labelSerial, 'text', x))
 
-class SmartLogcatApp(App):
-    icon = 'icon.png'
+if __name__ == "__main__":
+    import sys
 
-    def build(self):
-        return SmartLogcat()
-    
-    def _serial_warning(self):
-        alertPopup('Warning', 'Command failed. Ensure you have selected a correct serial port')
-
-if __name__ == '__main__':
-    Logger.info('Aplicação iniciada')
-    SmartLogcatApp().run()
+    app = QApplication(sys.argv)
+    window = loadUi('main.ui')
+    ui = SmartLogcat(window=window)
+    window.show()
+    sys.exit(app.exec_())
